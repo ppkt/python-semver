@@ -11,7 +11,7 @@ from semver import bump_prerelease
 from semver import bump_build
 from semver import min_ver
 from semver import max_ver
-
+from semver import VersionInfo
 
 SEMVERFUNCS = [
     compare, match, parse, format_version,
@@ -270,3 +270,27 @@ def test_should_bump_build():
     assert bump_build('3.4.5-rc.1+0009.dev') == '3.4.5-rc.1+0010.dev'
     assert bump_build('3.4.5-rc.1') == '3.4.5-rc.1+build.1'
     assert bump_build('3.4.5') == '3.4.5+build.1'
+
+
+def test_compare_equal_version_info_objects():
+    v1 = VersionInfo(1, 0, 0, 'rc.1', None)
+    v2 = VersionInfo(1, 0, 0, 'rc.1', None)
+
+    assert v1 == v2
+    assert not(v1 != v2)
+
+
+def test_compare_not_equal_version_info_objects():
+    v1 = VersionInfo(1, 0, 0, None, None)
+    v2 = VersionInfo(1, 0, 0, None, 'build.1')
+
+    assert v1 != v2
+    assert not(v1 == v2)
+
+
+def test_compare_lesser_greater_version_info_objects():
+    rc1 = VersionInfo(1, 2, 3, 'rc.1', None)
+    rc2 = VersionInfo(1, 2, 3, 'rc.2', None)
+
+    assert rc1 < rc2
+    assert rc2 > rc1
